@@ -23,10 +23,10 @@ Zdrojové dáta pochádzajú z grouplens datasetu dostupného tu - https://group
 # 2 Dimenzionálny model
 Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde centrálny bod predstavuje faktová tabuľka fact_ratings, ktorá je prepojená s nasledujúcimi dimenziami:
 
-- [dim_movies]: Obsahuje podrobné informácie o filomch (názov, rok vydania, žáner).
-- [dim_users]: Obsahuje demografické údaje o používateľoch, ako sú vekové kategórie, pohlavie, povolanie a poštové smerovacie číslo.
-- [dim_date]: Zahrňuje informácie o dátumoch hodnotení (deň, mesiac, rok, štvrťrok).
-- [dim_time]: Obsahuje podrobné časové údaje (hodina, minúty).
+- [dim_movies](dim_movies): Obsahuje podrobné informácie o filomch (názov, rok vydania, žáner).
+- [dim_users](dim_users): Obsahuje demografické údaje o používateľoch, ako sú vekové kategórie, pohlavie, povolanie a poštové smerovacie číslo.
+- [dim_date](dim_date): Zahrňuje informácie o dátumoch hodnotení (deň, mesiac, rok, štvrťrok).
+- [dim_time](dim_time): Obsahuje podrobné časové údaje (hodina, minúty).
 Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
 
 
