@@ -20,7 +20,7 @@ Zdrojové dáta pochádzajú z grouplens datasetu dostupného tu - https://group
  
 ![Obrázok 1 Entitno-relačná schéma MovieLens](https://github.com/user-attachments/assets/b35ae0ce-a0df-479f-a020-f2819d54e47e)
 
-# 2 Dimenzionálny model
+## 2. Dimenzionálny model
 Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde centrálny bod predstavuje faktová tabuľka fact_ratings, ktorá je prepojená s nasledujúcimi dimenziami:
 
 - [dim_movies](dim_movies): Obsahuje podrobné informácie o filomch (názov, rok vydania, žáner).
@@ -33,7 +33,8 @@ Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde cen
 
 
 ![star_schema](https://github.com/user-attachments/assets/83884ccf-0dbb-4681-ac80-fa0ba2e1cdb7)
-# 3. ETL proces v Snowflake
+## 3. ETL proces v Snowflake
 ETL proces pozostával z troch hlavných fáz: extrahovanie (Extract), transformácia (Transform) a načítanie (Load). Tento proces bol implementovaný v Snowflake s cieľom pripraviť zdrojové dáta zo staging vrstvy do viacdimenzionálneho modelu vhodného na analýzu a vizualizáciu.
-# 3.1 Extract (Extrahovanie dát)
+
+## 3.1 Extract (Extrahovanie dát)
 Dáta zo zdrojového datasetu (formát .csv) boli najprv nahraté do Snowflake prostredníctvom interného stage úložiska s názvom my_stage. Stage v Snowflake slúži ako dočasné úložisko na import alebo export dát. Vytvorenie stage bolo zabezpečené príkazom:
