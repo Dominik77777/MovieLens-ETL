@@ -4,7 +4,7 @@ Tento projekt dokumentuje implementáciu ETL procesu pre dataset MovieLens v Sno
 
 ## 1. Úvod a popis zdrojových dát
 Dataset MovieLens obsahuje údaje o filmoch, užívateľoch a hodnoteniach. Cieľom analýzy je identifikovať najpopulárnejšie filmy, žánre a takisto informácie o používateľoch ako vek alebo zamestanie.
-Zdrojové dáta pochádzajú z grouplens datasetu dostupného tu. Dataset obsahuje 6 hlavných tabuliek:
+Zdrojové dáta pochádzajú z grouplens datasetu dostupného tu - https://grouplens.org/datasets/movielens/. Dataset obsahuje 6 hlavných tabuliek:
 
 - [Movies](#movies)
 - [Users](#users)
