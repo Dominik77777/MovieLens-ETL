@@ -32,3 +32,4 @@ Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde cen
 Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
 
 
+![star_schema](https://github.com/user-attachments/assets/83884ccf-0dbb-4681-ac80-fa0ba2e1cdb7)
