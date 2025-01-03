@@ -27,6 +27,8 @@ Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde cen
 - [dim_users](dim_users): Obsahuje demografické údaje o používateľoch, ako sú vekové kategórie, pohlavie, povolanie a poštové smerovacie číslo.
 - [dim_date](dim_date): Zahrňuje informácie o dátumoch hodnotení (deň, mesiac, rok, štvrťrok).
 - [dim_time](dim_time): Obsahuje podrobné časové údaje (hodina, minúty).
+
+  
 Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
 
 
