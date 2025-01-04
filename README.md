@@ -20,7 +20,8 @@ Zdrojové dáta pochádzajú z grouplens datasetu dostupného tu - https://group
  ## ERD diagram
  Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na __entitno-relačnom diagrame (ERD)__:
  
-![Obrázok 1 Entitno-relačná schéma MovieLens](https://github.com/user-attachments/assets/b35ae0ce-a0df-479f-a020-f2819d54e47e)
+![erd_schema_movielens](https://github.com/user-attachments/assets/05a17385-818a-42df-a16c-ea0343c6ca35)
+
 
 ## 2. Dimenzionálny model
 Navrhnutý bol __hviezdicový model (star schema__), pre efektívnu analýzu kde centrálny bod predstavuje faktová tabuľka __fact_ratings__, ktorá je prepojená s nasledujúcimi dimenziami:
@@ -34,7 +35,8 @@ Navrhnutý bol __hviezdicový model (star schema__), pre efektívnu analýzu kde
 Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
 
 
-![star_chema](https://github.com/user-attachments/assets/68fbbe13-00d4-4d2c-9944-b9c544a55f0d)
+![star_schema](https://github.com/user-attachments/assets/82aaebfd-5b6c-47ea-a2f3-e92c68ae4a35)
+
 
 
 
