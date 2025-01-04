@@ -16,12 +16,12 @@ Zdrojové dáta pochádzajú z grouplens datasetu dostupného tu - https://group
  ## 1.1 Dátová architektúra
 
  ## ERD diagram
- Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na entitno-relačnom diagrame (ERD):
+ Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na __entitno-relačnom diagrame (ERD)__:
  
 ![Obrázok 1 Entitno-relačná schéma MovieLens](https://github.com/user-attachments/assets/b35ae0ce-a0df-479f-a020-f2819d54e47e)
 
 ## 2. Dimenzionálny model
-Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde centrálny bod predstavuje faktová tabuľka fact_ratings, ktorá je prepojená s nasledujúcimi dimenziami:
+Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde centrálny bod predstavuje faktová tabuľka __fact_ratings__, ktorá je prepojená s nasledujúcimi dimenziami:
 
 - [dim_movies](dim_movies): Obsahuje podrobné informácie o filomch (názov, rok vydania, žáner).
 - [dim_users](dim_users): Obsahuje demografické údaje o používateľoch, ako sú vekové kategórie, pohlavie, povolanie a poštové smerovacie číslo.
@@ -37,7 +37,7 @@ Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde cen
 
 
 ## 3. ETL proces v Snowflake
-ETL proces pozostával z troch hlavných fáz: extrahovanie (Extract), transformácia (Transform) a načítanie (Load). Tento proces bol implementovaný v Snowflake s cieľom pripraviť zdrojové dáta zo staging vrstvy do viacdimenzionálneho modelu vhodného na analýzu a vizualizáciu.
+ETL proces pozostával z troch hlavných fáz: __extrahovanie (Extract), transformácia (Transform) a načítanie (Load)__. Tento proces bol implementovaný v Snowflake s cieľom pripraviť zdrojové dáta zo staging vrstvy do viacdimenzionálneho modelu vhodného na analýzu a vizualizáciu.
 
 ## 3.1 Extract (Extrahovanie dát)
 Dáta zo zdrojového datasetu (formát .csv) boli najprv nahraté do Snowflake prostredníctvom interného stage úložiska s názvom my_stage. Stage v Snowflake slúži ako dočasné úložisko na import alebo export dát. Vytvorenie stage bolo zabezpečené príkazom:
@@ -111,4 +111,4 @@ ORDER BY total_ratings DESC;
 ```
 Dashboard MovieLens je interaktívna vizualizácia, ktorá slúži na analýzu a prehľad o rôznych aspektoch dát z databázy MovieLens, ktorá obsahuje informácie o filmoch, hodnoteniach a používateľoch. Tento dashboard poskytuje užívateľom a analytikom nástroje na rýchlu analýzu trendov v dátach, ktoré sú často využívané v oblasti odporúčacích systémov a analýzy filmových preferencií.
 
-__Autor: __ Dominik Čibik
+__Autor:__ Dominik Čibik
