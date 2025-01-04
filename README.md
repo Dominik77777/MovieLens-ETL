@@ -109,3 +109,6 @@ JOIN dim_users u ON r.userId = u.dim_userId
 GROUP BY u.occupation, u.gender
 ORDER BY total_ratings DESC;
 ```
+Dashboard MovieLens je interaktívna vizualizácia, ktorá slúži na analýzu a prehľad o rôznych aspektoch dát z databázy MovieLens, ktorá obsahuje informácie o filmoch, hodnoteniach a používateľoch. Tento dashboard poskytuje užívateľom a analytikom nástroje na rýchlu analýzu trendov v dátach, ktoré sú často využívané v oblasti odporúčacích systémov a analýzy filmových preferencií.
+
+__Autor: __ Dominik Čibik
