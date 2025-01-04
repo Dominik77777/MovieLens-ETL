@@ -32,7 +32,8 @@ Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde cen
 Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
 
 
-![star_chema](https://github.com/user-attachments/assets/30c1c325-7fe8-404f-a602-8f6056ee02a9)
+![star_chema](https://github.com/user-attachments/assets/68fbbe13-00d4-4d2c-9944-b9c544a55f0d)
+
 
 
 ## 3. ETL proces v Snowflake
