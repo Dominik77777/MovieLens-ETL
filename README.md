@@ -51,6 +51,28 @@ COPY INTO occupations_staging
 FROM @my_stage/occupations.csv
 FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1);
 ```
+## 3.2 Transfor (Transformácia dát)
+Dimenzie boli navrhnuté na poskytovanie kontextu pre faktovú tabuľku. Dim_users obsahuje údaje o používateľoch vrátane pohlavia, vekových kategórií, zamestnania a poštovného smerovacieho čísla. Transformácia zahŕňala rozdelenie veku používateľov do kategórií (napr. „18-24“) a pridanie popisov zamestnaní. Táto dimenzia je typu SCD 2, čo umožňuje sledovať historické zmeny v zamestnaní používateľov.
+
+``` sql
+CREATE TABLE dim_users AS
+SELECT DISTINCT
+    u.userId AS dim_userId,
+    CASE 
+        WHEN u.age < 18 THEN 'Under 18'
+        WHEN u.age BETWEEN 18 AND 24 THEN '18-24'
+        WHEN u.age BETWEEN 25 AND 34 THEN '25-34'
+        WHEN u.age BETWEEN 35 AND 44 THEN '35-44'
+        WHEN u.age BETWEEN 45 AND 54 THEN '45-54'
+        WHEN u.age >= 55 THEN '55+'
+        ELSE 'Unknown'
+    END AS age_group,
+    u.gender,
+    o.name AS occupation,
+    u.zip_code,
+FROM users_staging u
+JOIN occupations_staging o ON u.occupationId = o.occupationId;
+```
 
 ## 3.3 Load (Načítanie dát)
 Po úspešnom vytvorení dimenzií a faktovej tabuľky boli dáta nahraté do finálnej štruktúry. Na záver boli staging tabuľky odstránené, aby sa optimalizovalo využitie úložiska:
