@@ -50,7 +50,7 @@ Dashboard obsahuje 5 vizualizácií, ktoré zobrazujú základný prehľad o fil
 ## Graf 1: 10 najlepšie hodnotených filmov v roku 1999
 Táto vizualizácia zobrazuje 10 filmov s najlepším priemerným hodnotením v roku 1999 s minimálne 1000 hodnoteniami. Umožňuje nám identifikovať aké filmy používatelia považujúza najlepšie v jednotlivom roku. Zistili sme napríklad, že najlepšie hodnoteným filmom je Matrix s priemerným hodnotením 4.42.
 
-```
+``` sql
 SELECT 
     m.title, 
     AVG(r.rating) AS avg_rating,
