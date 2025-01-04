@@ -4,14 +4,16 @@ Tento projekt dokumentuje implementáciu ETL procesu pre dataset `MovieLens` v S
 
 ## 1. Úvod a popis zdrojových dát
 Dataset MovieLens obsahuje údaje o filmoch, používateľoch a hodnoteniach. Cieľom analýzy je identifikovať najpopulárnejšie filmy, žánre a takisto informácie o používateľoch ako vek alebo zamestanie.
-Zdrojové dáta pochádzajú z grouplens datasetu dostupného tu - https://grouplens.org/datasets/movielens/. Dataset obsahuje 6 hlavných tabuliek:
+Zdrojové dáta pochádzajú z grouplens datasetu dostupného tu - https://grouplens.org/datasets/movielens/. Dataset obsahuje 8 hlavných tabuliek:
 
-- `Movies`
-- `Users`
-- `Ratings`
-- `Genres`
-- `Occupations`
-- `Age_group`
+- `Movies`: Obsahuje podrobné informácie o filmoch (názov, rok vydania).
+- `Users`: Obsahuje údaje o používateľoch (pohlavie, psč).
+- `Tags`: Obsahujú takzvané štítky pre filmy dané používateľmi.
+- `Ratings`: Obsahuje hodnotenie a čas hodnotenia.
+- `Genres`: Obsahuje názov žánru.
+- `Genres_movies`: Spojovacia tabuľka medzi tabuľkou Movies a Genres, ktorá obsahuje cudzie kľúče movieId a genreId.
+- `Occupations`: Obsahuje názov povolania.
+- `Age_group`: Obsahuje vekové kategórie.
 
  ## 1.1 Dátová architektúra
 
