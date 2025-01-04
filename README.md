@@ -44,7 +44,7 @@ Dáta zo zdrojového datasetu (formát .csv) boli najprv nahraté do Snowflake p
 
 ## 3.3 Load (Načítanie dát)
 Po úspešnom vytvorení dimenzií a faktovej tabuľky boli dáta nahraté do finálnej štruktúry. Na záver boli staging tabuľky odstránené, aby sa optimalizovalo využitie úložiska:
-```
+``` sql
 DROP TABLE IF EXISTS books_staging;
 DROP TABLE IF EXISTS education_levels_staging;
 DROP TABLE IF EXISTS occupations_staging;
