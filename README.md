@@ -44,3 +44,6 @@ Dáta zo zdrojového datasetu (formát .csv) boli najprv nahraté do Snowflake p
 
 ## 4 Vizualizácia dát
 Dashboard obsahuje 5 vizualizácií, ktoré zobrazujú základný prehľad o filmoch, ich hodnotení a používateľských preferenciách. Tieto vizualizácie zodpovedajú otázky ohľadom popularity filmov a informácií o používaťeľoch.
+
+![MovieLens_dashboard](https://github.com/user-attachments/assets/62c46063-c9a2-4d22-b836-c9b8402ea360)
+
