@@ -65,7 +65,7 @@ LIMIT 10;
 ```
 ## Graf 2: Počet hodnotení filmov podľa času
 
-```
+``` sql
 SELECT
     t.hour AS hour,
     COUNT(r.rating) AS total_ratings
@@ -76,7 +76,7 @@ ORDER BY hour;
 ```
 
 ## Graf 3: Rozdelenie žánrov podľa vekovej skupiny používateľov
-```
+``` sql
 SELECT
     m.genres AS genre,
     u.age_group AS age_group,
@@ -89,7 +89,7 @@ ORDER BY total_ratings DESC;
 ```
 
 ## Graf 4: Počet hodnotení podľa mesiaca 
-```
+``` sql
 SELECT
     d.month AS month,
     COUNT(r.rating) AS total_ratings
@@ -99,7 +99,7 @@ GROUP BY d.month
 ORDER BY month;
 ```
 ## Graf 5: Počet hodnotení podľa povolania a pohlavia
-```
+``` sql
 SELECT
     u.occupation AS occupation,
     u.gender AS gender,
