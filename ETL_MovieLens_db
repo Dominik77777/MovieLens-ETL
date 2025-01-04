@@ -1,0 +1,188 @@
+CREATE DATABASE MovieLens_DB;
+
+CREATE SCHEMA MovieLens_DB.staging;
+
+USE SCHEMA MovieLens_DB.staging;
+
+CREATE TABLE occupations_staging (
+    occupationId INT PRIMARY KEY,
+    name VARCHAR(25)
+);
+
+CREATE TABLE agegroup_staging (
+    ageId INT PRIMARY KEY,
+    name VARCHAR(25)
+);
+
+CREATE TABLE genres_staging (
+    genreId INT PRIMARY KEY,
+    name VARCHAR(25)
+);
+
+CREATE TABLE movies_staging (
+    movieId INT PRIMARY KEY,
+    title VARCHAR(100),
+    release_year VARCHAR(10)
+);
+
+CREATE TABLE users_staging (
+    userId INT PRIMARY KEY,
+    age INT,
+    gender VARCHAR(10),
+    occupationId INT,
+    zip_code VARCHAR(20)
+);
+
+CREATE TABLE moviegenres_staging (
+    genre_movieId INT PRIMARY KEY,
+    movieId INT,
+    genreId INT,
+    FOREIGN KEY (movieId) REFERENCES MOVIES_STAGING(movieId),
+    FOREIGN KEY (genreId) REFERENCES GENRES_STAGING(genreId)
+);
+
+CREATE TABLE ratings_staging (
+    ratingId INT PRIMARY KEY,
+    userId INT,
+    movieId INT,
+    rating INT,
+    rated_at TIMESTAMP_NTZ,
+    FOREIGN KEY (userId) REFERENCES users_staging(userId),
+    FOREIGN KEY (movieId) REFERENCES movies_staging(movieId)
+);
+
+CREATE OR REPLACE STAGE my_stage;
+
+COPY INTO occupations_staging
+FROM @my_stage/occupations.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1 FIELD_DELIMITER = ';');
+
+COPY INTO users_staging
+FROM @my_stage/users.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1 FIELD_DELIMITER = ';');
+
+COPY INTO moviegenres_staging
+FROM @my_stage/genres_movies.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1 FIELD_DELIMITER = ';');
+
+COPY INTO movies_staging
+FROM @my_stage/movies.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO agegroup_staging
+FROM @my_stage/agegroup.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1 FIELD_DELIMITER = ';');
+
+COPY INTO genres_staging
+FROM @my_stage/genres.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1 FIELD_DELIMITER = ';');
+
+COPY INTO ratings_staging
+FROM @my_stage/ratings.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1 FIELD_DELIMITER = ';');
+
+
+CREATE TABLE dim_users AS
+SELECT DISTINCT
+    u.userId AS dim_userId,
+    CASE 
+        WHEN u.age < 18 THEN 'Under 18'
+        WHEN u.age BETWEEN 18 AND 24 THEN '18-24'
+        WHEN u.age BETWEEN 25 AND 34 THEN '25-34'
+        WHEN u.age BETWEEN 35 AND 44 THEN '35-44'
+        WHEN u.age BETWEEN 45 AND 54 THEN '45-54'
+        WHEN u.age >= 55 THEN '55+'
+        ELSE 'Unknown'
+    END AS age_group,
+    u.gender,
+    o.name AS occupation,
+    u.zip_code,
+FROM users_staging u
+JOIN occupations_staging o ON u.occupationId = o.occupationId;
+
+CREATE TABLE DIM_DATE AS
+SELECT
+    ROW_NUMBER() OVER (ORDER BY CAST(rated_at AS DATE)) AS dim_dateID, 
+    CAST(rated_at AS DATE) AS date,                    
+    DATE_PART(day, rated_at) AS day,                   
+    DATE_PART(dow, rated_at) + 1 AS dayOfWeek,        
+    CASE DATE_PART(dow, rated_at) + 1
+        WHEN 1 THEN 'Pondelok'
+        WHEN 2 THEN 'Utorok'
+        WHEN 3 THEN 'Streda'
+        WHEN 4 THEN 'Štvrtok'
+        WHEN 5 THEN 'Piatok'
+        WHEN 6 THEN 'Sobota'
+        WHEN 7 THEN 'Nedeľa'
+    END AS dayOfWeekAsString,
+    DATE_PART(month, rated_at) AS month,              
+    CASE DATE_PART(month, rated_at)
+        WHEN 1 THEN 'Január'
+        WHEN 2 THEN 'Február'
+        WHEN 3 THEN 'Marec'
+        WHEN 4 THEN 'Apríl'
+        WHEN 5 THEN 'Máj'
+        WHEN 6 THEN 'Jún'
+        WHEN 7 THEN 'Júl'
+        WHEN 8 THEN 'August'
+        WHEN 9 THEN 'September'
+        WHEN 10 THEN 'Október'
+        WHEN 11 THEN 'November'
+        WHEN 12 THEN 'December'
+    END AS monthAsString,
+    DATE_PART(year, rated_at) AS year,                
+    DATE_PART(week, rated_at) AS week,               
+    DATE_PART(quarter, rated_at) AS quarter           
+FROM RATINGS_STAGING
+GROUP BY CAST(rated_at AS DATE), 
+         DATE_PART(day, rated_at), 
+         DATE_PART(dow, rated_at), 
+         DATE_PART(month, rated_at), 
+         DATE_PART(year, rated_at), 
+         DATE_PART(week, rated_at), 
+         DATE_PART(quarter, rated_at);
+
+
+CREATE TABLE DIM_TIME AS
+SELECT DISTINCT
+    ROW_NUMBER() OVER (ORDER BY DATE_TRUNC('SECOND', rated_at)) AS dim_timeID, 
+    DATE_TRUNC('SECOND', rated_at) AS rated_at,                
+    EXTRACT(HOUR FROM rated_at) AS hour,                                                              
+    EXTRACT(MINUTE FROM rated_at) AS minute,
+    EXTRACT(SECOND FROM rated_at) AS second                                                             
+FROM RATINGS_STAGING;
+
+
+CREATE TABLE DIM_MOVIES AS
+SELECT DISTINCT
+    m.movieId AS dim_movieId,      
+    m.title AS title,               
+    m.release_year AS release_year,
+    g.name AS genres
+FROM MOVIES_STAGING m
+JOIN moviegenres_staging mg ON m.movieId = mg.movieId 
+JOIN GENRES_STAGING g ON mg.genreId = g.genreId;
+
+CREATE TABLE FACT_RATINGS AS
+SELECT 
+    r.ratingId AS fact_ratingID,
+    r.rated_at AS rated_at,   
+    r.rating,
+    d.dim_dateID AS dateID,
+    t.dim_timeID AS timeID,
+    m.dim_movieId AS movieID,
+    u.dim_userId AS userID
+FROM RATINGS_STAGING r
+JOIN DIM_DATE d ON CAST(r.rated_at AS DATE) = d.date
+JOIN DIM_TIME t ON r.rated_at = t.rated_at
+JOIN DIM_MOVIES m ON r.movieId = m.dim_movieId
+JOIN DIM_USERS u ON r.userId = u.dim_userId;
+
+
+DROP TABLE IF EXISTS movies_staging;
+DROP TABLE IF EXISTS genres_staging;
+DROP TABLE IF EXISTS agegroup_staging;
+DROP TABLE IF EXISTS occupations_staging;
+DROP TABLE IF EXISTS ratings_staging;
+DROP TABLE IF EXISTS users_staging;
+DROP TABLE IF EXISTS moviegenres_staging;
