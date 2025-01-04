@@ -1,3 +1,4 @@
+``` sql
 CREATE DATABASE MovieLens_DB;
 
 CREATE SCHEMA MovieLens_DB.staging;
@@ -186,3 +187,4 @@ DROP TABLE IF EXISTS occupations_staging;
 DROP TABLE IF EXISTS ratings_staging;
 DROP TABLE IF EXISTS users_staging;
 DROP TABLE IF EXISTS moviegenres_staging;
+```
