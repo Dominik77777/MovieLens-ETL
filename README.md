@@ -7,11 +7,11 @@ Dataset MovieLens obsahuje údaje o filmoch, používateľoch a hodnoteniach. Ci
 Zdrojové dáta pochádzajú z grouplens datasetu dostupného tu - https://grouplens.org/datasets/movielens/. Dataset obsahuje 6 hlavných tabuliek:
 
 - `Movies`
-- [Users](#users)
-- [Ratings](#ratings)
-- [Genres](#genres)
-- [Occupations](#occupations)
-- [Age_group](#age_group)
+- `Users`
+- `Ratings`
+- `Genres`
+- `Occupations`
+- `Age_group`
 
  ## 1.1 Dátová architektúra
 
@@ -21,12 +21,12 @@ Zdrojové dáta pochádzajú z grouplens datasetu dostupného tu - https://group
 ![Obrázok 1 Entitno-relačná schéma MovieLens](https://github.com/user-attachments/assets/b35ae0ce-a0df-479f-a020-f2819d54e47e)
 
 ## 2. Dimenzionálny model
-Navrhnutý bol hviezdicový model (star schema), pre efektívnu analýzu kde centrálny bod predstavuje faktová tabuľka __fact_ratings__, ktorá je prepojená s nasledujúcimi dimenziami:
+Navrhnutý bol __hviezdicový model (star schema__), pre efektívnu analýzu kde centrálny bod predstavuje faktová tabuľka __fact_ratings__, ktorá je prepojená s nasledujúcimi dimenziami:
 
-- [dim_movies](dim_movies): Obsahuje podrobné informácie o filomch (názov, rok vydania, žáner).
-- [dim_users](dim_users): Obsahuje demografické údaje o používateľoch, ako sú vekové kategórie, pohlavie, povolanie a poštové smerovacie číslo.
-- [dim_date](dim_date): Zahrňuje informácie o dátumoch hodnotení (deň, mesiac, rok, štvrťrok).
-- [dim_time](dim_time): Obsahuje podrobné časové údaje (hodina, minúty).
+- `dim_movies`: Obsahuje podrobné informácie o filomch (názov, rok vydania, žáner).
+- `dim_users`: Obsahuje demografické údaje o používateľoch, ako sú vekové kategórie, pohlavie, povolanie a poštové smerovacie číslo.
+- `dim_date`: Zahrňuje informácie o dátumoch hodnotení (deň, mesiac, rok, štvrťrok).
+- `dim_time`: Obsahuje podrobné časové údaje (hodina, minúty).
 
   
 Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
@@ -42,6 +42,16 @@ ETL proces pozostával z troch hlavných fáz: __extrahovanie (Extract), transfo
 ## 3.1 Extract (Extrahovanie dát)
 Dáta zo zdrojového datasetu (formát .csv) boli najprv nahraté do Snowflake prostredníctvom interného stage úložiska s názvom my_stage. Stage v Snowflake slúži ako dočasné úložisko na import alebo export dát. Vytvorenie stage bolo zabezpečené príkazom:
 
+## 3.3 Load (Načítanie dát)
+Po úspešnom vytvorení dimenzií a faktovej tabuľky boli dáta nahraté do finálnej štruktúry. Na záver boli staging tabuľky odstránené, aby sa optimalizovalo využitie úložiska:
+```
+DROP TABLE IF EXISTS books_staging;
+DROP TABLE IF EXISTS education_levels_staging;
+DROP TABLE IF EXISTS occupations_staging;
+DROP TABLE IF EXISTS ratings_staging;
+DROP TABLE IF EXISTS users_staging;
+```
+ETL proces v Snowflake umožnil spracovanie pôvodných dát z .csv formátu do viacdimenzionálneho modelu typu hviezda. Tento proces zahŕňal čistenie, obohacovanie a reorganizáciu údajov. Výsledný model umožňuje analýzu filmov a používateľských preferencií pričom poskytuje základ pre vizualizáciu.
 ## 4 Vizualizácia dát
 Dashboard obsahuje 5 vizualizácií, ktoré zobrazujú základný prehľad o filmoch, ich hodnotení a používateľských preferenciách. Tieto vizualizácie zodpovedajú otázky ohľadom popularity filmov a informácií o používaťeľoch.
 
