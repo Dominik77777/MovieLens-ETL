@@ -58,7 +58,7 @@ Dashboard obsahuje 5 vizualizácií, ktoré zobrazujú základný prehľad o fil
 ![MovieLens_dashboard](https://github.com/user-attachments/assets/62c46063-c9a2-4d22-b836-c9b8402ea360)
 
 ## Graf 1: 10 najlepšie hodnotených filmov v roku 1999
-Táto vizualizácia zobrazuje 10 filmov s najlepším priemerným hodnotením v roku 1999 s minimálne 1000 hodnoteniami. Umožňuje nám identifikovať aké filmy používatelia považujúza najlepšie v jednotlivom roku. Zistili sme napríklad, že najlepšie hodnoteným filmom je Matrix s priemerným hodnotením 4.42.
+Táto vizualizácia zobrazuje 10 filmov s najlepším priemerným hodnotením v roku 1999 s minimálne 1000 hodnoteniami. Tento graf môže byť užitočný na analýzu filmových trendov a preferencií divákov v konkrétnom roku. Pomáha identifikovať, ktoré filmy boli najviac oceňované, čo môže byť cenné pre historické porovnania. Zistili sme napríklad, že najlepšie hodnoteným filmom je Matrix s priemerným hodnotením 4.42.
 
 ``` sql
 SELECT 
