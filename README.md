@@ -74,6 +74,7 @@ ORDER BY avg_rating DESC
 LIMIT 10;
 ```
 ## Graf 2: Počet hodnotení filmov podľa času
+Tento graf zobrazuje počet hodnotení filmov v závislosti od hodiny dňa. Zistili sme, že najviac hodnotení pribúda v neskorých večerných hodinách. Takýto graf slúži na analýzu časových vzorcov, ako napríklad identifikáciu, v ktorých hodinách dňa je najväčší záujem o hodnotenie filmov, čo môže pomôcť pri plánovaní marketingových kampaní.
 
 ``` sql
 SELECT
@@ -86,6 +87,8 @@ ORDER BY hour;
 ```
 
 ## Graf 3: Rozdelenie žánrov podľa vekovej skupiny používateľov
+Tento graf ukazuje zobrazuje počet hodnotení filmov podľa žánru a vekovej skupiny používateľov. Z grafu je vidieť takisto, že njaviac hodnotení pridávajú používatelia vekovej skupiny 25-34 rokov. Tento graf slúži na analýzu preferencií používateľov podľa veku, čo môže pomôcť pri vývoji odporúčacích systémov a pri zameraní marketingových stratégií na rôzne vekové skupiny v súvislosti s obľúbenými žánrami.
+
 ``` sql
 SELECT
     m.genres AS genre,
@@ -99,6 +102,8 @@ ORDER BY total_ratings DESC;
 ```
 
 ## Graf 4: Počet hodnotení podľa mesiaca 
+Graf znázorňuje počet hodnotení filmov podľa mesiaca. Z grafu sme zistili, že najviac hodnotení bolo pridaných v decembri a to veľkým rozdielom. Tento graf slúži na analýzu sezónnych trendov v hodnotení filmov, čo môže byť užitočné na identifikáciu mesiacov s najväčším záujmom o filmy a na plánovanie marketingových alebo obsahových stratégií.
+
 ``` sql
 SELECT
     d.month AS month,
@@ -109,6 +114,8 @@ GROUP BY d.month
 ORDER BY month;
 ```
 ## Graf 5: Počet hodnotení podľa povolania a pohlavia
+Táto vizualizácia zobrazuje počet hodnotení filmov podľa povolania a pohlavia používateľov. Z tohto grafu sme mohli zistiť napríklad, že muži hodnotia filmy oveľa viac ako ženy. Tento graf slúži na analýzu toho, ako sa filmové preferencie líšia medzi rôznymi povolaniami a pohlaviami, čo môže pomôcť pri personalizácii odporúčacích systémov alebo pri zameraní marketingových stratégií na určité demografické skupiny.
+
 ``` sql
 SELECT
     u.occupation AS occupation,
