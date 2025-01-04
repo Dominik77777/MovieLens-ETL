@@ -73,6 +73,92 @@ SELECT DISTINCT
 FROM users_staging u
 JOIN occupations_staging o ON u.occupationId = o.occupationId;
 ```
+Dimenzia `dim_date` je navrhnutá tak, aby uchovávala informácie o dátumoch hodnotení filmov. Obsahuje odvodené údaje, ako sú deň, mesiac, rok, deň v týždni a štvrťrok. Táto dimenzia je štruktúrovaná tak, aby umožňovala podrobné časové analýzy, ako sú trendy hodnotení podľa dní, mesiacov alebo rokov. Z hľadiska SCD je táto dimenzia klasifikovaná ako SCD Typ 0. To znamená, že existujúce záznamy v tejto dimenzii sú nemenné a uchovávajú statické informácie.
+``` sql
+CREATE TABLE DIM_DATE AS
+SELECT
+    ROW_NUMBER() OVER (ORDER BY CAST(rated_at AS DATE)) AS dim_dateID, 
+    CAST(rated_at AS DATE) AS date,                    
+    DATE_PART(day, rated_at) AS day,                   
+    DATE_PART(dow, rated_at) + 1 AS dayOfWeek,        
+    CASE DATE_PART(dow, rated_at) + 1
+        WHEN 1 THEN 'Pondelok'
+        WHEN 2 THEN 'Utorok'
+        WHEN 3 THEN 'Streda'
+        WHEN 4 THEN 'Štvrtok'
+        WHEN 5 THEN 'Piatok'
+        WHEN 6 THEN 'Sobota'
+        WHEN 7 THEN 'Nedeľa'
+    END AS dayOfWeekAsString,
+    DATE_PART(month, rated_at) AS month,              
+    CASE DATE_PART(month, rated_at)
+        WHEN 1 THEN 'Január'
+        WHEN 2 THEN 'Február'
+        WHEN 3 THEN 'Marec'
+        WHEN 4 THEN 'Apríl'
+        WHEN 5 THEN 'Máj'
+        WHEN 6 THEN 'Jún'
+        WHEN 7 THEN 'Júl'
+        WHEN 8 THEN 'August'
+        WHEN 9 THEN 'September'
+        WHEN 10 THEN 'Október'
+        WHEN 11 THEN 'November'
+        WHEN 12 THEN 'December'
+    END AS monthAsString,
+    DATE_PART(year, rated_at) AS year,                
+    DATE_PART(week, rated_at) AS week,               
+    DATE_PART(quarter, rated_at) AS quarter           
+FROM RATINGS_STAGING
+GROUP BY CAST(rated_at AS DATE), 
+         DATE_PART(day, rated_at), 
+         DATE_PART(dow, rated_at), 
+         DATE_PART(month, rated_at), 
+         DATE_PART(year, rated_at), 
+         DATE_PART(week, rated_at), 
+         DATE_PART(quarter, rated_at);
+```
+
+Podobne aj `dim_time` uchováva základné časové údaje (ako sú hodina, minúta, sekunda), ktoré sa nikdy nemenia. Časové dimenzie, ako dim_time, zvyčajne nevyžadujú žiadne aktualizácie alebo sledovanie historických zmien. Z hľadiska SCD je táto dimenzia klasifikovaná ako SCD Typ 0. To znamená, že existujúce záznamy v tejto dimenzii sú nemenné a uchovávajú statické informácie.
+``` sql
+CREATE TABLE DIM_TIME AS
+SELECT DISTINCT
+    ROW_NUMBER() OVER (ORDER BY DATE_TRUNC('SECOND', rated_at)) AS dim_timeID, 
+    DATE_TRUNC('SECOND', rated_at) AS rated_at,                
+    EXTRACT(HOUR FROM rated_at) AS hour,                                                              
+    EXTRACT(MINUTE FROM rated_at) AS minute,
+    EXTRACT(SECOND FROM rated_at) AS second                                                             
+FROM RATINGS_STAGING;
+```
+
+Taktiež `dim_movies` obsahuje údaje o filmoch, ako sú názov, žáner, rok vydania. Táto dimenzia je typu SCD Typ 0, pretože údaje o filmoch sú považované za nemenné.
+``` sql
+CREATE TABLE DIM_MOVIES AS
+SELECT DISTINCT
+    m.movieId AS dim_movieId,      
+    m.title AS title,               
+    m.release_year AS release_year,
+    g.name AS genres
+FROM MOVIES_STAGING m
+JOIN moviegenres_staging mg ON m.movieId = mg.movieId 
+JOIN GENRES_STAGING g ON mg.genreId = g.genreId;
+```
+Faktová tabuľka `fact_ratings` obsahuje záznamy o hodnoteniach a prepojenia na všetky dimenzie. Obsahuje kľúčové metriky, ako je hodnota hodnotenia a časový údaj.
+``` sql
+CREATE TABLE FACT_RATINGS AS
+SELECT 
+    r.ratingId AS fact_ratingID,
+    r.rated_at AS rated_at,   
+    r.rating,
+    d.dim_dateID AS dateID,
+    t.dim_timeID AS timeID,
+    m.dim_movieId AS movieID,
+    u.dim_userId AS userID
+FROM RATINGS_STAGING r
+JOIN DIM_DATE d ON CAST(r.rated_at AS DATE) = d.date
+JOIN DIM_TIME t ON r.rated_at = t.rated_at
+JOIN DIM_MOVIES m ON r.movieId = m.dim_movieId
+JOIN DIM_USERS u ON r.userId = u.dim_userId;
+```
 
 ## 3.3 Load (Načítanie dát)
 Po úspešnom vytvorení dimenzií a faktovej tabuľky boli dáta nahraté do finálnej štruktúry. Na záver boli staging tabuľky odstránené, aby sa optimalizovalo využitie úložiska:
