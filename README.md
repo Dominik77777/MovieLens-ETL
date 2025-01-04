@@ -65,3 +65,47 @@ LIMIT 10;
 ```
 ## Graf 2: Počet hodnotení filmov podľa času
 
+```
+SELECT
+    t.hour AS hour,
+    COUNT(r.rating) AS total_ratings
+FROM fact_ratings r
+JOIN dim_time t ON r.timeId = t.dim_timeId
+GROUP BY t.hour
+ORDER BY hour;
+```
+
+## Graf 3: Rozdelenie žánrov podľa vekovej skupiny používateľov
+```
+SELECT
+    m.genres AS genre,
+    u.age_group AS age_group,
+    COUNT(r.rating) AS total_ratings
+FROM fact_ratings r
+JOIN dim_movies m ON r.movieId = m.dim_movieId
+JOIN dim_users u ON r.userId = u.dim_userId
+GROUP BY m.genres, u.age_group
+ORDER BY total_ratings DESC;
+```
+
+## Graf 4: Počet hodnotení podľa mesiaca 
+```
+SELECT
+    d.month AS month,
+    COUNT(r.rating) AS total_ratings
+FROM fact_ratings r
+JOIN dim_date d ON r.dateId = d.dim_dateId
+GROUP BY d.month
+ORDER BY month;
+```
+## Graf 5: Počet hodnotení podľa povolania a pohlavia
+```
+SELECT
+    u.occupation AS occupation,
+    u.gender AS gender,
+    COUNT(r.rating) AS total_ratings
+FROM fact_ratings r
+JOIN dim_users u ON r.userId = u.dim_userId
+GROUP BY u.occupation, u.gender
+ORDER BY total_ratings DESC;
+```
