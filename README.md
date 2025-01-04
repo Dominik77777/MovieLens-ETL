@@ -51,8 +51,8 @@ COPY INTO occupations_staging
 FROM @my_stage/occupations.csv
 FILE_FORMAT = (TYPE = 'CSV' SKIP_HEADER = 1);
 ```
-## 3.2 Transfor (Transformácia dát)
-Dimenzie boli navrhnuté na poskytovanie kontextu pre faktovú tabuľku. Dim_users obsahuje údaje o používateľoch vrátane pohlavia, vekových kategórií, zamestnania a poštovného smerovacieho čísla. Transformácia zahŕňala rozdelenie veku používateľov do kategórií (napr. „18-24“) a pridanie popisov zamestnaní. Táto dimenzia je typu SCD 2, čo umožňuje sledovať historické zmeny v zamestnaní používateľov.
+## 3.2 Transform (Transformácia dát)
+Dimenzie boli navrhnuté na poskytovanie kontextu pre faktovú tabuľku. `Dim_users` obsahuje údaje o používateľoch vrátane pohlavia, vekových kategórií, zamestnania a poštovného smerovacieho čísla. Transformácia zahŕňala rozdelenie veku používateľov do kategórií (napr. „18-24“) a pridanie popisov zamestnaní. Táto dimenzia je typu SCD 2, čo umožňuje sledovať historické zmeny v zamestnaní používateľov.
 
 ``` sql
 CREATE TABLE dim_users AS
