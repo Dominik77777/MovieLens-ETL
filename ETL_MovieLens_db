@@ -33,6 +33,16 @@ CREATE TABLE users_staging (
     zip_code VARCHAR(20)
 );
 
+CREATE TABLE tags_staging (
+    tagId INT PRIMARY KEY,
+    tags VARCHAR(45),
+    userId INT,
+    movieId INT,
+    created_at TIMESTAMP_NTZ,
+    FOREIGN KEY (userId) REFERENCES users_staging(userId),
+    FOREIGN KEY (movieId) REFERENCES movies_staging(movieId)
+);
+
 CREATE TABLE moviegenres_staging (
     genre_movieId INT PRIMARY KEY,
     movieId INT,
@@ -81,6 +91,11 @@ COPY INTO ratings_staging
 FROM @my_stage/ratings.csv
 FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1 FIELD_DELIMITER = ';');
 
+COPY INTO tags_staging
+FROM @my_stage/tags.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1 FIELD_DELIMITER = ';')
+ON_ERROR = 'CONTINUE';
+
 
 CREATE TABLE dim_users AS
 SELECT DISTINCT
@@ -96,7 +111,7 @@ SELECT DISTINCT
     END AS age_group,
     u.gender,
     o.name AS occupation,
-    u.zip_code,
+    u.zip_code
 FROM users_staging u
 JOIN occupations_staging o ON u.occupationId = o.occupationId;
 
@@ -171,12 +186,15 @@ SELECT
     d.dim_dateID AS dateID,
     t.dim_timeID AS timeID,
     m.dim_movieId AS movieID,
-    u.dim_userId AS userID
+    u.dim_userId AS userID,
+    tg.tags
 FROM RATINGS_STAGING r
 JOIN DIM_DATE d ON CAST(r.rated_at AS DATE) = d.date
 JOIN DIM_TIME t ON r.rated_at = t.rated_at
 JOIN DIM_MOVIES m ON r.movieId = m.dim_movieId
-JOIN DIM_USERS u ON r.userId = u.dim_userId;
+JOIN DIM_USERS u ON r.userId = u.dim_userId
+LEFT JOIN tags_staging tg ON r.userId = tg.userId 
+                          AND r.movieId = tg.movieId;
 
 
 DROP TABLE IF EXISTS movies_staging;
@@ -186,3 +204,4 @@ DROP TABLE IF EXISTS occupations_staging;
 DROP TABLE IF EXISTS ratings_staging;
 DROP TABLE IF EXISTS users_staging;
 DROP TABLE IF EXISTS moviegenres_staging;
+DROP TABLE IF EXISTS tags_staging;
