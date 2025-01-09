@@ -35,7 +35,8 @@ Navrhnutý bol __hviezdicový model (star schema__), pre efektívnu analýzu kde
 Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
 
 
-![star_schema](https://github.com/user-attachments/assets/82aaebfd-5b6c-47ea-a2f3-e92c68ae4a35)
+![star_schema](https://github.com/user-attachments/assets/45c844f1-36d0-499f-9cb8-b652a6f84e76)
+
 
 
 
@@ -146,7 +147,7 @@ FROM MOVIES_STAGING m
 JOIN moviegenres_staging mg ON m.movieId = mg.movieId 
 JOIN GENRES_STAGING g ON mg.genreId = g.genreId;
 ```
-Faktová tabuľka `fact_ratings` obsahuje záznamy o hodnoteniach a prepojenia na všetky dimenzie. Obsahuje kľúčové metriky, ako je hodnota hodnotenia a časový údaj.
+Faktová tabuľka `fact_ratings` obsahuje záznamy o hodnoteniach a prepojenia na všetky dimenzie. Obsahuje kľúčové metriky, ako je hodnota hodnotenia a časový údaj a aj štítky pridané používateľmi.
 ``` sql
 CREATE TABLE FACT_RATINGS AS
 SELECT 
@@ -156,22 +157,28 @@ SELECT
     d.dim_dateID AS dateID,
     t.dim_timeID AS timeID,
     m.dim_movieId AS movieID,
-    u.dim_userId AS userID
+    u.dim_userId AS userID,
+    tg.tags
 FROM RATINGS_STAGING r
 JOIN DIM_DATE d ON CAST(r.rated_at AS DATE) = d.date
 JOIN DIM_TIME t ON r.rated_at = t.rated_at
 JOIN DIM_MOVIES m ON r.movieId = m.dim_movieId
-JOIN DIM_USERS u ON r.userId = u.dim_userId;
+JOIN DIM_USERS u ON r.userId = u.dim_userId
+LEFT JOIN tags_staging tg ON r.userId = tg.userId 
+                          AND r.movieId = tg.movieId;
 ```
 
 ## 3.3 Load (Načítanie dát)
 Po úspešnom vytvorení dimenzií a faktovej tabuľky boli dáta nahraté do finálnej štruktúry. Na záver boli staging tabuľky odstránené, aby sa optimalizovalo využitie úložiska:
 ``` sql
-DROP TABLE IF EXISTS books_staging;
-DROP TABLE IF EXISTS education_levels_staging;
+DROP TABLE IF EXISTS movies_staging;
+DROP TABLE IF EXISTS genres_staging;
+DROP TABLE IF EXISTS agegroup_staging;
 DROP TABLE IF EXISTS occupations_staging;
 DROP TABLE IF EXISTS ratings_staging;
 DROP TABLE IF EXISTS users_staging;
+DROP TABLE IF EXISTS moviegenres_staging;
+DROP TABLE IF EXISTS tags_staging;
 ```
 ETL proces v Snowflake umožnil spracovanie pôvodných dát z .csv formátu do viacdimenzionálneho modelu typu hviezda. Tento proces zahŕňal čistenie, obohacovanie a reorganizáciu údajov. Výsledný model umožňuje analýzu filmov a používateľských preferencií pričom poskytuje základ pre vizualizáciu.
 ## 4 Vizualizácia dát
